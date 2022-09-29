@@ -22,7 +22,7 @@ class ScheduleTest {
 
     @Test
     void test1909() throws Exception{
-        var sub = Schedule.schedule(APO.Weekday.MONDAY, data1909[1]).toArray();
+        var sub = Schedule.schedule(APO.Weekday.MONDAY, data1909[0]).toArray();
         var ref = List.of(
                 new APO.Appointment("Mareike", "Arbeiten Rheinstr.", at(9, 19, 7, 00), at(9, 19, 12, 55), APO.Location.RHEINSTRASSE),
                 new APO.Appointment("Eugen", "Arbeiten Rheinstr.", at(9, 19, 12, 55), at(9, 19, 19, 0), APO.Location.RHEINSTRASSE),

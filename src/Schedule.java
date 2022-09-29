@@ -1,6 +1,6 @@
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,13 +8,13 @@ public class Schedule implements APO {
     static Pattern locationPattern = Pattern.compile("(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim)");
     static Pattern contentPattern = Pattern.compile("(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim|Container)\\s([ZäöüÄÖÜßA-Za-z]*[-\\d]?[ZäöüÄÖÜßA-Za-z]*)\\s?(\\d\\d:\\d\\d)?");
 
-    public static List<APO.Appointment> schedule(Weekday weekday, String raw) throws Exception{
+    public static @org.jetbrains.annotations.NotNull List<APO.Appointment> schedule(Weekday weekday, String raw) throws Exception{
         String date = getDate(raw);
 
         List<APO.Appointment> appointments = new LinkedList<>();
         Matcher content = contentPattern.matcher(raw);
         Matcher location = locationPattern.matcher(raw);
-        while (content.find())
+        while(content.find())
         {
             LocalTime t1, t2;
             String place, starts, ends;
@@ -50,11 +50,15 @@ public class Schedule implements APO {
         return appointments;
     }
 
-    private static String getDate(String raw) throws Exception{
+    private static @org.jetbrains.annotations.NotNull String getDate(String raw) throws Exception{
         Matcher dateM = Pattern.compile("(\\d\\d\\.\\d\\d\\.)").matcher(raw);
         if(dateM.find())
         {
             return dateM.group().concat("2022");
-        } else throw new Exception("NO DATE PROVIDED");
+        }
+        else
+        {
+            throw new Exception("NO DATE PROVIDED");
+        }
     }
 }
