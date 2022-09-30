@@ -1,18 +1,26 @@
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class ScheduleTest {
 
-    String dst = "C:\\dev\\out\\arbeitsplan_2.txt";
-    String[] data1909 = SchedulePreProcessor.readClean(dst);
+    public static final String DST = "C:\\dev\\out\\arbeitsplan_2.txt";
 
-    ScheduleTest() throws IOException{
+    public static final String[] raw;
+
+    static
+    {
+        try
+        {
+            raw = SchedulePreProcessor.readClean(DST);
+        }catch(java.io.IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -22,7 +30,7 @@ class ScheduleTest {
 
     @Test
     void test1909() throws Exception{
-        var sub = Schedule.schedule(APO.Weekday.MONDAY, data1909[0]).toArray();
+        var sub = Schedule.schedule(APO.Weekday.MONDAY, raw[0]).toArray();
         var ref = List.of(
                 new APO.Appointment("Mareike", "Arbeiten Rheinstr.", at(9, 19, 7, 00), at(9, 19, 12, 55), APO.Location.RHEINSTRASSE),
                 new APO.Appointment("Eugen", "Arbeiten Rheinstr.", at(9, 19, 12, 55), at(9, 19, 19, 0), APO.Location.RHEINSTRASSE),
@@ -35,8 +43,23 @@ class ScheduleTest {
         ).toArray();
         assertArrayEquals(ref, sub, "Monday 19.09. wrong");
     }
+    @Test
+    void show(){
+        for(String s: raw)
+        {
+            var spli = s.split("(.*Container\\s)");
+            for(String spl: spli)
+            {
+                System.out.println(spl+"\n");
+            }
+            System.out.println(
+                    "\n*********"
+            );
+        }
+    }
 
     static String at(int M, int d, int h, int m){
         return LocalDateTime.of(2022, M, d, h, m, 0).minusHours(2).format(DateTimeFormatter.ofPattern("uuuuMMdd'T'HHmmss'Z'"));
     }
+
 }

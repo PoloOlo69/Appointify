@@ -5,52 +5,46 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Schedule implements APO {
-	static Pattern locationPattern = Pattern.compile("(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim)");
-	static Pattern contentPattern = Pattern.compile("(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim|Container)\\s([ZäöüÄÖÜßA-Za-z]*[-\\d]?[ZäöüÄÖÜßA-Za-z]*)\\s?(\\d\\d:\\d\\d)?");
+	private static final String locations = "(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim)";
+	public static List<APO.Appointment> schedule(Weekday weekday, String raw) throws Exception{
 
-	public static @org.jetbrains.annotations.NotNull List<APO.Appointment> schedule(Weekday weekday, String raw) throws Exception{
+		var appointments = new LinkedList<APO.Appointment>();
 		String date = getDate(raw);
-
-		List<APO.Appointment> appointments = new LinkedList<>();
-		Matcher content = contentPattern.matcher(raw);
-		Matcher location = locationPattern.matcher(raw);
-		while(content.find())
+		// ISOLATING INFORMATION MATCHING A SPECIFIC LOCATION AT AT SPECIFIC DAY
+		for(String s: raw.split(".*?(Container\\s)"))
 		{
-			LocalTime t1, t2;
-			String place, starts, ends;
-			String name = content.group(2);
-			switch(content.group(1))
+			if(s.isBlank()) continue;
+
+			String context = get("(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim)", s, 1);
+			// SPLITTING BY LINEBREAKS TO GET ALL THE NECESSARY INFORMATION
+			for(String line: s.split("\r\n"))
 			{
-				case "Container" ->
+				LocalTime t1, t2;
+				String name, starts, ends;
+				if(!line.contains(context))
 				{
-					location.find();
-					place = location.group();
-					t1 = catalogue.get(place).get(weekday).opens();
-					t2 = catalogue.get(place).get(weekday).handover();
+					name = get("([ZäöüÄÖÜßA-Za-z]*[-\\d]?[ZäöüÄÖÜßA-Za-z]*)", line, 1);
+					t1 = catalogue.get(context).get(weekday).opens();
+					t2 = catalogue.get(context).get(weekday).handover();
+					starts = getDate.apply(date.concat(String.valueOf(t1)));
+					ends = getDate.apply(date.concat(String.valueOf(t2)));
+					appointments.add(new Appointment(name, "Arbeiten ".concat(context), starts, ends, dictionary.get(context)));
 				}
-
-				case "Bierstadt", "Dürerplatz", "Rheinstr.", "Erbenheim" ->
+				else
 				{
-					place = content.group(1);
-					t1 = catalogue.get(place).get(weekday).handover();
-					t2 = catalogue.get(place).get(weekday).closes();
-				}
-
-				default ->
-				{
-					place = location.group();
-					t1 = catalogue.get(place).get(weekday).handover();
-					t2 = catalogue.get(place).get(weekday).closes();
+					name = get("(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim)\\s([ZäöüÄÖÜßA-Za-z]*[-\\d]?[ZäöüÄÖÜßA-Za-z]*)", line, 2);
+					t1 = catalogue.get(context).get(weekday).handover();
+					t2 = catalogue.get(context).get(weekday).closes();
+					starts = getDate.apply(date.concat(String.valueOf(t1)));
+					ends = getDate.apply(date.concat(String.valueOf(t2)));
+					appointments.add(new Appointment(name, "Arbeiten ".concat(context), starts, ends, dictionary.get(context)));
 				}
 			}
-			starts = getDate.apply(date.concat(String.valueOf(t1)));
-			ends = getDate.apply(date.concat(String.valueOf(t2)));
-			appointments.add(new Appointment(name, "Arbeiten ".concat(place), starts, ends, dictionary.get(place)));
+
 		}
 		return appointments;
 	}
-
-	private static @org.jetbrains.annotations.NotNull String getDate(String raw) throws Exception{
+	private static String getDate(String raw) throws Exception{
 		Matcher dateM = Pattern.compile("(\\d\\d\\.\\d\\d\\.)").matcher(raw);
 		if(dateM.find())
 		{
@@ -60,6 +54,10 @@ public class Schedule implements APO {
 		{
 			throw new Exception("NO DATE PROVIDED");
 		}
+	}
+	private static String get(String regex, String str, int group){
+		var m = Pattern.compile(regex).matcher(str);
+		return m.find()? m.group(group):"";
 	}
 
 }
