@@ -9,12 +9,11 @@ public class SchedulePreProcessor {
     final static Predicate<String> UNWANTED = Predicate.not(s -> s.isBlank() || s.matches("([\\d\\d:\\d\\d\\s?]{7,})|(.*Arbeitsplan.*)"));
 
     public static String[] readClean(String src) throws IOException{
-        StringBuffer sb = new StringBuffer();
-        return Files.newBufferedReader(Path.of(src)).lines()
+        return Files.newBufferedReader(Path.of(src))
+                    .lines()
                     .filter(UNWANTED)
                     .map(s -> s.concat(System.lineSeparator()))
                     .collect(Collectors.joining())
                     .split(DAYS);
     }
-
 }
