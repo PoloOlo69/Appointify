@@ -8,27 +8,13 @@ class ICS implements APO {
     public static final String SRC = "C:\\dev\\in\\arbeitsplan.pdf";
     public static final String DST = "C:\\dev\\out\\arbeitsplan.txt";
 
-    private static final String DTSTAMP = "DTSTAMP:"+STAMP;
-    private static final String PRODID = "PRODID:POC_PDF_ICS_GEN\\PoloOlo\\69\r\n"; // Author
-    private static final String UID = "UID:%s\r\n";  // User
-    private static final String SUMMARY = "SUMMARY:%s\r\n"; // Appointment
-    private static final String DTSTART = "DTSTART:%s\r\n";  // Starts
-    private static final String DTEND = "DTEND:%s\r\n";  // Ends
-    private static final String DESCRIPTION = "DESCRIPTION:%s"; // Comment
-    private static final String LOCATION = "LOCATION:%s";  // Location
-    private static final HashMap<String, String> mandatory = new HashMap<>(
-            Map.of(UID, "User", SUMMARY, "Appointment",
-                   DTSTART, "Starts(dd.mm.yyyy HHmm\"Z\")", DTEND, "Ends",
-                   DESCRIPTION, "Comment", LOCATION, "Where"));
-    private static final Scanner sc = new Scanner(System.in);
-    static String HEAD = """
+    static final String HEAD = """
             BEGIN:VCALENDAR
             VERSION:2.0
             METHOD:PRIVATE
             PRODID:POC_PDF_ICS_GEN\\PoloOlo\\69
             """;
-    static StringBuffer BODY = new StringBuffer();
-    static String TAIL = """
+    static final String TAIL = """
             END:VCALENDAR
             """;
 
@@ -41,7 +27,6 @@ class ICS implements APO {
         ArrayList<Appointment> collected = new ArrayList<>();
         for(Weekday w: Weekday.values())
         {
-            System.out.println(raw[w.ordinal()]);
             collected.addAll(Schedule.schedule(w, raw[w.ordinal()]));
         }
         finish(groupingByName(collected));

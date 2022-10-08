@@ -6,7 +6,7 @@ import java.util.function.BiConsumer;
 
 public class Extractor {
 
-	public static BiConsumer<String, String> extract = Extractor::accept;
+	public static final BiConsumer<String, String> extract = Extractor::accept;
 
 	private static void accept(String src, String dst){
 

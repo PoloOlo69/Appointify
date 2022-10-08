@@ -47,7 +47,7 @@ class ScheduleTest {
     void show(){
         for(String s: raw)
         {
-            var spli = s.split("(.*Container\\s)");
+            var spli = s.split(".*Container");
             for(String spl: spli)
             {
                 System.out.println(spl+"\n");

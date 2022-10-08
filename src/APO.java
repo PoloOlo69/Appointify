@@ -76,6 +76,7 @@ public interface APO {
 	record BusinessHour(LocalTime opens, LocalTime closes, LocalTime handover) {
 	}
 
+	@SuppressWarnings("unused")
 	record Appointment(String who, String title, String starts, String ends, Location where) {
 		static int counter;
 		public Appointment(String who, String title, String starts, String ends, Location where){
@@ -97,6 +98,7 @@ public interface APO {
 					        "END:VEVENT\r\n")
 					       .formatted(STAMP.get(), title, who+"_"+LocalTime.now()+"_"+UUID.randomUUID(), starts, ends, where.adress);
 		}
+		@SuppressWarnings("unused")
 		int appointmentCount(){
 			return counter;
 		}
