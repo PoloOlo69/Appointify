@@ -32,7 +32,7 @@ class ScheduleTest {
     void test1909() throws Exception{
         var sub = Schedule.schedule(APO.Weekday.MONDAY, raw[0]).toArray();
         var ref = List.of(
-                new APO.Appointment("Mareike", "Arbeiten Rheinstr.", at(9, 19, 7, 00), at(9, 19, 12, 55), APO.Location.RHEINSTRASSE),
+                new APO.Appointment("Mareike", "Arbeiten Rheinstr.", at(9, 19, 7, 0), at(9, 19, 12, 55), APO.Location.RHEINSTRASSE),
                 new APO.Appointment("Eugen", "Arbeiten Rheinstr.", at(9, 19, 12, 55), at(9, 19, 19, 0), APO.Location.RHEINSTRASSE),
                 new APO.Appointment("Hafida", "Arbeiten Dürerplatz", at(9, 19, 8, 15), at(9, 19, 12, 55), APO.Location.DÜRERPLATZ),
                 new APO.Appointment("Ruth", "Arbeiten Dürerplatz", at(9, 19, 12, 55), at(9, 19, 18, 0), APO.Location.DÜRERPLATZ),
@@ -47,8 +47,8 @@ class ScheduleTest {
     void show(){
         for(String s: raw)
         {
-            var spli = s.split(".*Container");
-            for(String spl: spli)
+            var split = s.split(".*(Container\\s)");
+            for(String spl: split)
             {
                 System.out.println(spl+"\n");
             }

@@ -18,13 +18,13 @@ public class Schedule implements APO {
 			// SPLITTING BY LINEBREAKS TO GET ALL THE NECESSARY INFORMATION
 			for(String line: s.split("\r\n|\r|\n"))
 			{
-				if(line.contains("Feiertag") || line.contains("Geschlossen") || line.equals(context)) continue;
+				if(line.contains("Feiertag") || line.contains("Geschlossen") || line.equals(context)) break;
 
 				LocalTime t1, t2;
 				String name, starts, ends;
 				if(line.contains(context))
 				{
-					name = get("(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim)\\s([ZäöüÄÖÜßA-Za-z]*[-\\d]?[ZäöüÄÖÜßA-Za-z]*)", line, 2);
+					name = get("(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim)\\s([\\wÖÄÜöäü]*-?[\\wÖÄÜöäü]*|[\\wÖÄÜöäü]*\\s\\d?)", line, 2);
 					t1 = catalogue.get(context).get(weekday).handover();
 					t2 = catalogue.get(context).get(weekday).closes();
 				}
@@ -32,13 +32,13 @@ public class Schedule implements APO {
 				{
 					if(weekday.equals(APO.Weekday.SUNDAY) && appointments.size()>1)
 					{
-						name = get("([ZäöüÄÖÜßA-Za-z]*[-\\d]?[ZäöüÄÖÜßA-Za-z]*)", line, 1);
+						name = get("([\\wÖÄÜöäü]*-?[\\wÖÄÜöäü]*|[\\wÖÄÜöäü]*\\s\\d?)", line, 1);
 						t1 = LocalTime.of(16, 0);
 						t2 = LocalTime.of(20, 0);
 					}
 					else
 					{
-						name = get("([ZäöüÄÖÜßA-Za-z]*[-\\d]?[ZäöüÄÖÜßA-Za-z]*)", line, 1);
+						name = get("([\\wÖÄÜöäü]*-?[\\wÖÄÜöäü]*|[\\wÖÄÜöäü]*\\s\\d?)", line, 1);
 						t1 = catalogue.get(context).get(weekday).opens();
 						t2 = catalogue.get(context).get(weekday).handover();
 					}

@@ -22,7 +22,7 @@ public class Extractor {
 		for(int i = 0;i<doc.getPages().getCount();i++)
 		{
 			var page = doc.getPages().get(i);
-			sb.append(page.extractText(false));
+			sb.append(page.extractText(false, true, true));
 		}
 
 		try(FileWriter writer = new FileWriter(dst))

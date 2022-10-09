@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 class ICS implements APO {
-    public static final String SRC = "C:\\dev\\in\\arbeitsplan.pdf";
+    public static final String SRC = "C:\\dev\\in\\arbeitsplan03.pdf";
     public static final String DST = "C:\\dev\\out\\arbeitsplan.txt";
 
     static final String HEAD = """
