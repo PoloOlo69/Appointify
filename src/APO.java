@@ -76,7 +76,6 @@ public interface APO {
 	record BusinessHour(LocalTime opens, LocalTime closes, LocalTime handover) {
 	}
 
-	@SuppressWarnings("unused")
 	record Appointment(String who, String title, String starts, String ends, Location where) {
 		static int counter;
 		public Appointment(String who, String title, String starts, String ends, Location where){
@@ -87,7 +86,28 @@ public interface APO {
 			this.where = where;
 			counter++;
 		}
+		static final String HEAD = """
+				BEGIN:VCALENDAR
+				VERSION:2.0
+				METHOD:PRIVATE
+				PRODID:POC_PDF_ICS_GEN\\PoloOlo\\69
+				""";
+		static final String TAIL = """
+				END:VCALENDAR
+				""";
 		String toICS(){
+			return ("BEGIN:VEVENT\r\n"+
+					        "DTSTAMP:%s\r\n"+
+					        "SUMMARY:%s\r\n"+
+					        "UID:%s\r\n"+
+					        "DTSTART:%s\r\n"+
+					        "DTEND:%s\r\n"+
+					        "LOCATION:%s\r\n"+
+					        "END:VEVENT\r\n")
+					       .formatted(STAMP.get(), title, who+"_"+LocalTime.now()+"_"+UUID.randomUUID(), starts, ends, where.adress);
+		}
+		@Override
+		public String toString(){
 			return ("BEGIN:VEVENT\r\n"+
 					        "DTSTAMP:%s\r\n"+
 					        "SUMMARY:%s\r\n"+

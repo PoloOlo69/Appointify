@@ -1,27 +1,18 @@
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.io.*;
+import java.nio.file.*;
+import java.time.*;
+import java.time.format.*;
+import java.util.*;
+import java.util.regex.*;
+import java.util.stream.*;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ScheduleTest {
 
     public static final String DST = "C:\\dev\\out\\arbeitsplan_2.txt";
-
-    public static final String[] raw;
-
-    static
-    {
-        try
-        {
-            raw = SchedulePreProcessor.readClean(DST);
-        }catch(java.io.IOException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Test
     void schedule() throws Exception{
@@ -30,7 +21,13 @@ class ScheduleTest {
 
     @Test
     void test1909() throws Exception{
-        var sub = Schedule.schedule(APO.Weekday.MONDAY, raw[0]).toArray();
+        String s_String = Files.readString(Path.of("C:\\dev\\out\\arbeitsplan_2.txt"));
+
+        final String WEEKDAY_R = "\\s(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag)\\s";
+        final String CONTAINER_R = "(?<=\\bContainer\\b )(.*?)(?=\\bContainer\\b |\\z|\\d\\d:\\d\\d \\d\\d:\\d\\d |\\d\\d\\.\\d\\d\\.)";
+
+        var res = Arrays.stream(s_String.split(WEEKDAY_R)).toList();
+        var sub = Schedule.schedule(APO.Weekday.MONDAY, res.get(1)).toArray();
         var ref = List.of(
                 new APO.Appointment("Mareike", "Arbeiten Rheinstr.", at(9, 19, 7, 0), at(9, 19, 12, 55), APO.Location.RHEINSTRASSE),
                 new APO.Appointment("Eugen", "Arbeiten Rheinstr.", at(9, 19, 12, 55), at(9, 19, 19, 0), APO.Location.RHEINSTRASSE),
@@ -44,20 +41,44 @@ class ScheduleTest {
         assertArrayEquals(ref, sub, "Monday 19.09. wrong");
     }
     @Test
-    void show(){
-        for(String s: raw)
+    void show() throws IOException{
+        String s_String = Files.readString(Path.of("C:\\dev\\out\\arbeitsplan_2.txt"));
+
+        final String WEEKDAY_R = "\\s(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag)\\s";
+        final String CONTAINER_R = "(?<=\\bContainer\\b ).*?(?=\\bContainer\\b |\\z|\\d\\d:\\d\\d \\d\\d:\\d\\d |\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d)";
+        var x = Pattern.compile("(?<=\\bContainer\\b ).*?(?=\\bContainer\\b |\\z|\\d\\d:\\d\\d \\d\\d:\\d\\d |\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d)", Pattern.DOTALL);
+
+        var res = Arrays.stream(s_String.split(WEEKDAY_R)).collect(Collectors.joining());
+
+        var m = x.matcher(res);
+
+        while(m.find())
         {
-            var split = s.split(".*(Container\\s)");
-            for(String spl: split)
-            {
-                System.out.println(spl+"\n");
-            }
-            System.out.println(
-                    "\n*********"
-            );
+            System.out.println(m.group()+"\n\n");
         }
+        System.out.println(
+                "\n*********"
+        );
     }
 
+    @Test
+    void test2(){
+        try
+        {
+            String s_String = Files.readString(Path.of("C:\\dev\\out\\arbeitsplan_2.txt"));
+
+            final String WEEKDAY_R = "\\s(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag)\\s";
+            final String CONTAINER_R = "(?<=\\bContainer\\b )(.*?)(?=\\bContainer\\b |\\z|\\d\\d:\\d\\d \\d\\d:\\d\\d |\\d\\d\\.\\d\\d\\.)";
+            System.out.println(
+
+                    Arrays.stream(s_String.split(WEEKDAY_R)).toList()
+            );
+        }catch(IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+    }
     static String at(int M, int d, int h, int m){
         return LocalDateTime.of(2022, M, d, h, m, 0).minusHours(2).format(DateTimeFormatter.ofPattern("uuuuMMdd'T'HHmmss'Z'"));
     }

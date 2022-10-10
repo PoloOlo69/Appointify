@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 class ICS implements APO {
-    public static final String SRC = "C:\\dev\\in\\arbeitsplan03.pdf";
+    public static final String SRC = "C:\\dev\\in\\arbeitsplan_1.pdf";
     public static final String DST = "C:\\dev\\out\\arbeitsplan.txt";
 
     static final String HEAD = """
@@ -17,7 +17,7 @@ class ICS implements APO {
     static final String TAIL = """
             END:VCALENDAR
             """;
-
+    //TODO - FIX NAMEREGEX - FIX TESTS - CLEANUP
     public static void main(String... args) throws Exception{
 
         Extractor.extract.accept(SRC, DST);
@@ -30,6 +30,7 @@ class ICS implements APO {
             collected.addAll(Schedule.schedule(w, raw[w.ordinal()]));
         }
         finish(groupingByName(collected));
+        System.out.println(Appointment.counter+" appointments created");
     }
     private static void finish(Map<String, List<Appointment>> appointmentMap){
         appointmentMap.forEach((name, appointments) -> {
@@ -38,43 +39,26 @@ class ICS implements APO {
 
             if(!dir.exists())
             {
-                if(dir.mkdirs())
-                {
-                    System.out.println("Successfully created: "+dir.getPath());
-                }
-                else
+                if(!dir.mkdirs())
+
                 {
                     System.out.println("Error while creating"+dir.getPath());
                 }
             }
-            else
-            {
-                System.out.println(dir.getPath()+" already exists!");
-            }
-
             File res = new File("C:\\dev\\testzentrum\\kalendereinträge\\"+name.toLowerCase()+"\\"+name.toLowerCase()+".ics");
             try
             {
                 if(!res.exists())
                 {
-                    if(res.createNewFile())
+                    if(!res.createNewFile())
                     {
-                        System.out.println("Successfully created: "+res);
+                        System.out.println("Error trying to create File: "+res);
                     }
-                    else
-                    {
-                        System.out.println("Error while creating"+res);
-                    }
-
                 }
                 else
                 {
-                    System.out.println(res.getAbsolutePath()+" already exists, trying to delete: "+res);
-                    if(res.delete())
-                    {
-                        System.out.println("Successfully deleted: "+res);
-                    }
-                    else
+                    System.out.println(res.getAbsolutePath()+" already exists, trying to update: "+res);
+                    if(!res.delete())
                     {
                         System.out.println("Error while deleting: "+res);
                     }

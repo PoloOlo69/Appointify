@@ -1,8 +1,9 @@
+import java.nio.file.*;
 import java.time.LocalTime;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.*;
 
 public class Schedule implements APO {
 	public static List<APO.Appointment> schedule(Weekday weekday, String raw) throws Exception{
@@ -10,10 +11,20 @@ public class Schedule implements APO {
 		var appointments = new LinkedList<APO.Appointment>();
 		String date = getDate(raw);
 		// ISOLATING INFORMATION MATCHING A SPECIFIC LOCATION AT AT SPECIFIC DAY
-		for(String s: raw.split(".*(Container\\s)"))
-		{
-			if(s.isBlank()) continue;
 
+		String s_String = Files.readString(Path.of("C:\\dev\\out\\arbeitsplan_2.txt"));
+
+		final String WEEKDAY_R = "\\s(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag)\\s";
+		final String CONTAINER_R = "(?<=\\bContainer\\b ).*?(?=\\bContainer\\b |\\z|\\d\\d:\\d\\d \\d\\d:\\d\\d |\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d)";
+		var x = Pattern.compile("(?<=\\bContainer\\b ).*?(?=\\bContainer\\b |\\z|\\d\\d:\\d\\d \\d\\d:\\d\\d |\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d)", Pattern.DOTALL);
+
+		var res = Arrays.stream(s_String.split(WEEKDAY_R)).collect(Collectors.joining());
+
+		var m = x.matcher(res);
+
+		while(m.find())
+		{
+			var s = m.group();
 			String context = get("(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim)\\s", s, 1);
 			// SPLITTING BY LINEBREAKS TO GET ALL THE NECESSARY INFORMATION
 			for(String line: s.split("\r\n|\r|\n"))
