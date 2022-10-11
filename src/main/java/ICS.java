@@ -30,7 +30,6 @@ class ICS implements APO {
             collected.addAll(Schedule.schedule(w, raw[w.ordinal()]));
         }
         finish(groupingByName(collected));
-        System.out.println(Appointment.counter+" appointments created");
     }
     private static void finish(Map<String, List<Appointment>> appointmentMap){
         appointmentMap.forEach((name, appointments) -> {
