@@ -27,8 +27,7 @@ public interface APO {
 
 
     record BusinessHour(LocalTime opens, LocalTime closes, LocalTime handover) {}
-    record Appointment(String who, String title, String starts, String ends, Location where) {
-
+    record Appointment(String who, String title, String starts, String ends, String address) {
         String toICS() {
             return ("BEGIN:VEVENT\r\n" +
                     "DTSTAMP:%s\r\n" +
@@ -38,7 +37,7 @@ public interface APO {
                     "DTEND:%s\r\n" +
                     "LOCATION:%s\r\n" +
                     "END:VEVENT\r\n")
-                    .formatted(STAMP.get(), title, who + "_" + UUID.randomUUID(), starts, ends, where.adressOf);
+                    .formatted(STAMP.get(), title, who + "_" + UUID.randomUUID(), starts, ends, address);
         }
     }
 
@@ -89,8 +88,8 @@ public interface APO {
                     Weekday.SATURDAY, new BusinessHour(time.apply(8, 50), time.apply(16, 0), time.apply(13, 25)),
                     Weekday.SUNDAY, new BusinessHour(time.apply(8, 45), time.apply(14, 0), time.apply(11, 30))
             );
-    Map<String, Location> dictionary =
-            Map.of("Bierstadt", Location.BIERSTADT, "Rheinstr.", Location.RHEINSTRASSE, "Dürerplatz", Location.DÜRERPLATZ, "Erbenheim", Location.ERBENHEIM);
     Map<String, Map<Weekday, BusinessHour>> catalogue =
             Map.of("Rheinstr.", rheinstrasse, "Bierstadt", bierstadt, "Erbenheim", erbenheim, "Dürerplatz", dürerplatz);
+    Map<String, Location> dictionary =
+            Map.of("Bierstadt", Location.BIERSTADT, "Rheinstr.", Location.RHEINSTRASSE, "Dürerplatz", Location.DÜRERPLATZ, "Erbenheim", Location.ERBENHEIM);
 }

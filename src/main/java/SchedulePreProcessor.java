@@ -11,10 +11,13 @@ public class SchedulePreProcessor {
     public static final String WEEKDAY_R =
                     "\\b(?<=Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag)\\b"
                     + ".*?" +
-                    "(?=\\b(?:Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag)\\b|[0-9]{2}:[0-9]{2} [0-9]{2}:|[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}|\\z)";
+                    "(?=\\b(?:Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag)\\b|[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}|[0-9]{2}:[0-9]{2} [0-9]{2}:|\\z)";
+
     public static List<String> readClean(String path) throws IOException{
+
         Pattern pattern = Pattern.compile(WEEKDAY_R, Pattern.DOTALL);
         Matcher matcher = pattern.matcher(Files.readString(Path.of(path)));
+
         return matcher.results().map(MatchResult::group).toList();
     }
 }

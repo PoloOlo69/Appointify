@@ -28,7 +28,7 @@ public class Schedule implements APO {
 			// SPLITTING BY LINEBREAKS TO GET ALL THE NECESSARY INFORMATION
 			for(String line: s.split("\r\n|\r|\n"))
 			{
-				if(line.contains("Feiertag") || line.contains("Geschlossen") || line.equals(context)) break;
+				if(line.contains("Geschlossen") || line.equals(context)) break;
 
 				LocalTime t1, t2;
 				String name, starts, ends;
@@ -55,7 +55,7 @@ public class Schedule implements APO {
 				}
 				starts = getDate.apply(date.concat(String.valueOf(t1)));
 				ends = getDate.apply(date.concat(String.valueOf(t2)));
-				appointments.add(new APO.Appointment(name, "Arbeiten ".concat(context), starts, ends, dictionary.get(context)));
+				appointments.add(new APO.Appointment(name, "Arbeiten ".concat(context), starts, ends, dictionary.get(context).adressOf));
 			}
 
 		}

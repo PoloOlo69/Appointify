@@ -1,0 +1,83 @@
+23.09.2022      00:27 Schedule Week 26. Sept 22.xlsx
+07:00 07:30 08:00 08:30 09:00 09:30 10:00 10:30 11:00 11:30 12:00 12:30 13:00 13:00 13:30 14:00 14:30 15:00 15:30 16:00 16:30 17:00 17:30 18:00 18:30 19:00 19:30
+Monday Terminal Any_Name
+26.09. Sydney Any_Name
+Terminal Any_Name 08:15
+Singapur Any_Name 12:55
+Terminal Any_Name
+Frankfurt Any_Name 12:50
+Terminal Any_Name
+Dubai Any_Name 12:55
+07:00 07:30 08:00 08:30 09:00 09:30 10:00 10:30 11:00 11:30 12:00 12:30 13:00 13:00 13:30 14:00 14:30 15:00 15:30 16:00 16:30 17:00 17:30 18:00 18:30 19:00 19:30
+Tuesday Terminal Any_Name
+27.09. Sydney Any_Name
+Terminal Any_Name 08:15
+Singapur Any_Name 12:55
+Terminal Any_Name
+Frankfurt Any_Name 12:55
+Terminal Any_Name
+Dubai Any_Name 12:55
+07:00 07:30 08:00 08:30 09:00 09:30 10:00 10:30 11:00 11:30 12:00 12:30 13:00 13:00 13:30 14:00 14:30 15:00 15:30 16:00 16:30 17:00 17:30 18:00 18:30 19:00 19:30
+Wednesday Terminal Any_Name
+28.09. Sydney Any_Name 12:50
+Terminal Any_Name 08:15
+Singapur Any_Name 12:55
+Terminal Any_Name
+Frankfurt Any_Name 12:55
+Terminal Any_Name
+Dubai Any_Name 12:55
+23.09.2022      00:27 Schedule Week 26. Sept 22.xlsx
+07:00 07:30 08:00 08:30 09:00 09:30 10:00 10:30 11:00 11:30 12:00 12:30 13:00 13:00 13:30 14:00 14:30 15:00 15:30 16:00 16:30 17:00 17:30 18:00 18:30 19:00 19:30
+Thursday Terminal Any_Name
+29.09. Sydney Any_Name\\s2
+Terminal Any_Name 08:15
+Singapur Any_Name 12:55
+Terminal Any_Name
+Frankfurt Any_Name 12:55
+Terminal Any_Name
+Dubai Any_Name 12:55
+07:00 07:30 08:00 08:30 09:00 09:30 10:00 10:30 11:00 11:30 12:00 12:30 13:00 13:00 13:30 14:00 14:30 15:00 15:30 16:00 16:30 17:00 17:30 18:00 18:30 19:00 19:30
+Friday Terminal Any_Name
+30.09. Sydney Any_Name\\s2
+Terminal Any_Name 08:15
+Singapur Any_Name 12:55
+Terminal Any_Name
+Frankfurt Any_Name 12:55
+Terminal Any_Name
+Dubai Any_Name 12:55
+07:00 07:30 08:00 08:30 09:00 09:30 10:00 10:30 11:00 11:30 12:00 12:30 13:00 13:00 13:30 14:00 14:30 15:00 15:30 16:00 16:30 17:00 17:30 18:00 18:30 19:00 19:30
+Saturday Terminal Any_Name 08:15 Please do, and,…plenty fill, speciäl chäräcter thanks
+01.10. Sydney Any_Name NameB will get stuff, this and That. 13:25
+Terminal Any_Name 08:45 letzter Test 12:45
+Singapur Closed
+4,5h Terminal Any_Name 08:45
+4,5h Frankfurt Any_Name 13:25
+3,5h Terminal Any_Name 08:50
+3,5h Dubai Any_Name 12:25
+07:00 07:30 08:00 08:30 09:00 09:30 10:00 10:30 11:00 11:30 12:00 12:30 13:00 13:00 13:30 14:00 14:30 15:00 15:30 16:00 16:30 17:00 17:30 18:00 18:30 19:00 19:30
+Sunday Terminal Any_Name
+02.10. Sydney Any_Name
+Any_Name
+Terminal Closed
+Singapur Closed
+3h Terminal Any_Name 09:50
+3h Frankfurt Any_Name 12:55
+5h Terminal Any_Name 08:55
+Dubai
+
+
+/// READS AS
+Shift_1: Sunday Terminal Any_Name (TERMINAL IS THE NAME OF THE BUILDING)
+Shift_2: 02.10. Sydney Any_Name (LOCATION OF 'TERMINAL')
+Shift_3: Any_Name (OPTIONAL ONLY ON SATURDAYS AND HOLIDAYS)
+
+Shift_1: Terminal Closed
+Shift_2: Singapur Closed
+
+Shift_1: 3h Terminal Any_Name 09:55 (SOMETIMES COMMENTS ARE ADDED EITHER HERE)
+Shift_2: 3h Frankfurt Any_Name (OR HERE) 12:55
+
+Shift_1: 5h Terminal Any_Name 08:55 (IN THIS CASE STARTING AT 08:55 TO 13:55)
+Shift_2: Dubai (NO SHIFT)
+
+
