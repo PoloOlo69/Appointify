@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Spire.Pdf">
     <CLASSES>
-      <root url="jar://$USER_HOME$/libs/Spire.Pdf.jar!/" />
+      <root url="jar://$USER_HOME$/dev/libs/Spire.Pdf.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

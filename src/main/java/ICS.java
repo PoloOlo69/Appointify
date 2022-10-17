@@ -5,8 +5,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 class ICS implements APO {
-    public static final String SRC = "C:\\dev\\in\\arbeitsplan_1.pdf";
-    public static final String DST = "C:\\dev\\out\\arbeitsplan.txt";
+    public static final String SRC = System.getProperty("user.home")+"/dev/testzentrum/in/arbeitsplan.pdf";
+    public static final String DST = System.getProperty("user.home")+"/dev/testzentrum/out/arbeitsplan.pdf";
 
     static final String HEAD = """
             BEGIN:VCALENDAR
@@ -27,14 +27,15 @@ class ICS implements APO {
         ArrayList<Appointment> collected = new ArrayList<>();
         for(Weekday w: Weekday.values())
         {
-            collected.addAll(Schedule.schedule(w, raw[w.ordinal()]));
+            collected.addAll(Schedule.schedule(w, raw.get(w.ordinal())));
         }
-        finish(groupingByName(collected));
+        System.out.println("\n"+groupingByName(collected));
+        // finish(groupingByName(collected));
     }
     private static void finish(Map<String, List<Appointment>> appointmentMap){
         appointmentMap.forEach((name, appointments) -> {
 
-            File dir = new File("C:\\dev\\testzentrum\\kalendereinträge\\"+name.toLowerCase());
+            File dir = new File("C:\\dev\\testzentrum\\kalendereinträge\\"+name.toLowerCase()); //TODO
 
             if(!dir.exists())
             {
@@ -44,7 +45,7 @@ class ICS implements APO {
                     System.out.println("Error while creating"+dir.getPath());
                 }
             }
-            File res = new File("C:\\dev\\testzentrum\\kalendereinträge\\"+name.toLowerCase()+"\\"+name.toLowerCase()+".ics");
+            File res = new File("C:\\dev\\testzentrum\\kalendereinträge\\"+name.toLowerCase()+"\\"+name.toLowerCase()+".ics"); // TODO
             try
             {
                 if(!res.exists())

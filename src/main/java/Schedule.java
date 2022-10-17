@@ -12,10 +12,9 @@ public class Schedule implements APO {
 		String date = getDate(raw);
 		// ISOLATING INFORMATION MATCHING A SPECIFIC LOCATION AT AT SPECIFIC DAY
 
-		String s_String = Files.readString(Path.of("C:\\dev\\out\\arbeitsplan_2.txt"));
+		String s_String = Files.readString(Path.of(System.getProperty("user.home")+"/dev/testzentrum/out/arbeitsplan.txt"));
 
 		final String WEEKDAY_R = "\\s(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag)\\s";
-		final String CONTAINER_R = "(?<=\\bContainer\\b ).*?(?=\\bContainer\\b |\\z|\\d\\d:\\d\\d \\d\\d:\\d\\d |\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d)";
 		var x = Pattern.compile("(?<=\\bContainer\\b ).*?(?=\\bContainer\\b |\\z|\\d\\d:\\d\\d \\d\\d:\\d\\d |\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d)", Pattern.DOTALL);
 
 		var res = Arrays.stream(s_String.split(WEEKDAY_R)).collect(Collectors.joining());
