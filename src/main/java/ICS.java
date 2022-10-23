@@ -6,46 +6,41 @@ import java.util.stream.Collectors;
 
 class ICS implements APO {
     public static final String SRC = System.getProperty("user.home")+"/dev/testzentrum/in/arbeitsplan.pdf";
-    public static final String DST = System.getProperty("user.home")+"/dev/testzentrum/out/arbeitsplan.pdf";
+    public static final String DST = System.getProperty("user.home")+"/dev/testzentrum/out/arbeitsplan.txt";
 
-    static final String HEAD = """
-            BEGIN:VCALENDAR
-            VERSION:2.0
-            METHOD:PRIVATE
-            PRODID:POC_PDF_ICS_GEN\\PoloOlo\\69
-            """;
-    static final String TAIL = """
-            END:VCALENDAR
-            """;
     //TODO - FIX NAMEREGEX - FIX TESTS - CLEANUP
     public static void main(String... args) throws Exception{
-
-        Extractor.extract.accept(SRC, DST);
-
+        // Extract text from PDF
+        Extractor.extract(SRC, DST);
+        // Remove unnecessary Strings and split by weekdays
         var raw = SchedulePreProcessor.readClean(DST);
-
-        ArrayList<Appointment> collected = new ArrayList<>();
+        // Create a List to Store the generated Calendar data into
+        ArrayList<Appointment> result = new ArrayList<>();
+        // Schedule each day and add the appointments to the Result
         for(Weekday w: Weekday.values())
         {
-            collected.addAll(Schedule.schedule(w, raw.get(w.ordinal())));
+            var generated = Schedule.scheduleByDay(raw.get(w.ordinal()), w);
+            result.addAll(generated);
         }
-        System.out.println("\n"+groupingByName(collected));
-        // finish(groupingByName(collected));
+        // Write all collected appointments grouped by names to a file
+        finish(groupingByName(result));
+    }
+    private static Map<String, List<Appointment>> groupingByName(ArrayList<Appointment> processed){
+        return processed.stream().collect(Collectors.groupingBy(Appointment::who));
     }
     private static void finish(Map<String, List<Appointment>> appointmentMap){
         appointmentMap.forEach((name, appointments) -> {
 
-            File dir = new File("C:\\dev\\testzentrum\\kalendereinträge\\"+name.toLowerCase()); //TODO
+            File dir = new File(System.getProperty("user.home")+"/dev/testzentrum/kalendereinträge/"+name.toLowerCase());
 
             if(!dir.exists())
             {
                 if(!dir.mkdirs())
-
                 {
                     System.out.println("Error while creating"+dir.getPath());
                 }
             }
-            File res = new File("C:\\dev\\testzentrum\\kalendereinträge\\"+name.toLowerCase()+"\\"+name.toLowerCase()+".ics"); // TODO
+            File res = new File(System.getProperty("user.home")+"/dev/testzentrum/kalendereinträge/"+name.toLowerCase()+"/"+name.toLowerCase()+".ics");
             try
             {
                 if(!res.exists())
@@ -89,8 +84,13 @@ class ICS implements APO {
         });
 
     }
-    private static Map<String, List<Appointment>> groupingByName(ArrayList<Appointment> processed){
-        return processed.stream().collect(Collectors.groupingBy(Appointment::who));
-    }
-
+    static final String HEAD = """
+            BEGIN:VCALENDAR
+            VERSION:2.0
+            METHOD:PRIVATE
+            PRODID:POC_PDF_ICS_GEN\\PoloOlo\\69
+            """;
+    static final String TAIL = """
+            END:VCALENDAR
+            """;
 }

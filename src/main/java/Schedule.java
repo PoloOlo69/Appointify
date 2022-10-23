@@ -1,80 +1,107 @@
-import java.nio.file.*;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.*;
 
 public class Schedule implements APO {
-	public static List<APO.Appointment> schedule(Weekday weekday, String raw) throws Exception{
+    private static String getDate(String raw) {
+        Matcher date = Pattern.compile(DATE_REGEX).matcher(raw);
+        if (date.find()) {
+            return date.group().concat("2022");
+        }
+        return "NOT PROVIDED";
+    }
 
-		var appointments = new LinkedList<APO.Appointment>();
-		String date = getDate(raw);
-		// ISOLATING INFORMATION MATCHING A SPECIFIC LOCATION AT AT SPECIFIC DAY
+    private static final String NEW_LINE = "\\r\\n|\\r|\\n";
+    private static final String DATE_REGEX = "(?:[0-9]{2}\\.){2}";
+    private static final String WEEKDAY_REGEX = "\\w*tag|Mittwoch";
+    private static final String DURATION_REGEX = "(([0-9]),?([0-9])?h)";
+    private static final String CONTEXT_REGEX = "(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim)";
+    private static final String CONTAINER_REGEX =
+            "(?:([0-9],?[0-9]?h )?Container\\b).*?"+"(?=([0-9],?[0-9]?h )?Container\\b|\\z)";
+    private static final Pattern CONTEXT_PATTERN = Pattern.compile(CONTEXT_REGEX, Pattern.MULTILINE);
+    private static final Pattern CONTAINER_PATTERN = Pattern.compile(CONTAINER_REGEX, Pattern.DOTALL);
 
-		String s_String = Files.readString(Path.of(System.getProperty("user.home")+"/dev/testzentrum/out/arbeitsplan.txt"));
+    public static List<Appointment> scheduleByDay(String raw, Weekday weekday) {
+        List<Appointment> appointments = new ArrayList<>();
+        String date = getDate(raw);
+        Matcher contextSplitter = CONTAINER_PATTERN.matcher(raw);
+        while (contextSplitter.find())
+        {
+            String contextGroup = contextSplitter.group();
+            Matcher contextMatcher = CONTEXT_PATTERN.matcher(contextGroup);
+            if (contextMatcher.find())
+            {
+                String context = contextMatcher.group();
+                String address = APO.dictionary.get(context).adressOf;
 
-		final String WEEKDAY_R = "\\s(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag)\\s";
-		var x = Pattern.compile("(?<=\\bContainer\\b ).*?(?=\\bContainer\\b |\\z|\\d\\d:\\d\\d \\d\\d:\\d\\d |\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d)", Pattern.DOTALL);
+                for (String line : contextGroup.split(NEW_LINE))
+                {
+                    if (line.equals(context) || line.equals("Container") || line.contains("Geschlossen")) break;
+                    var appointment = schedule(weekday, date, context, address, line);
+                    appointment.ifPresent(appointments::add);
+                }
+            }
+        }
+        return appointments;
+    }
+    private static Optional<Appointment> schedule(Weekday weekday, String date, String context, String address, String line) {
+        StringTokenizer tokenizer = new StringTokenizer(line);
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
 
-		var res = Arrays.stream(s_String.split(WEEKDAY_R)).collect(Collectors.joining());
+            Optional<Appointment> appointment = switch (token) {
 
-		var m = x.matcher(res);
+                case "Container" -> {
+                    if (tokenizer.hasMoreTokens())
+                    {
+                        String employee = tokenizer.nextToken();
+                        String start = getFormattedDateTime.apply(date.concat(String.valueOf(catalogue.get(context).get(weekday).opens())));
+                        String end = getFormattedDateTime.apply(date.concat(String.valueOf(catalogue.get(context).get(weekday).handover())));
+                        String description = flushTokenizer(tokenizer);
+                        yield Optional.of(new Appointment(employee, "Arbeiten " + context, description, start, end, address));
+                    }
+                    yield Optional.empty();
+                }
 
-		while(m.find())
-		{
-			var s = m.group();
-			String context = get("(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim)\\s", s, 1);
-			// SPLITTING BY LINEBREAKS TO GET ALL THE NECESSARY INFORMATION
-			for(String line: s.split("\r\n|\r|\n"))
-			{
-				if(line.contains("Geschlossen") || line.equals(context)) break;
+                case "Bierstadt", "Rheinstr.", "Dürerplatz", "Erbenheim" -> {
+                    if (tokenizer.hasMoreTokens())
+                    {
+                        String employee = tokenizer.nextToken();
+                        String start = getFormattedDateTime
+                                .apply(date.concat(String.valueOf(catalogue.get(context).get(weekday).handover())));
+                        String end = getFormattedDateTime
+                                .apply(date.concat(String.valueOf(catalogue.get(context).get(weekday).closes())));
+                        String description = flushTokenizer(tokenizer);
+                        yield Optional.of(new Appointment(employee, "Arbeiten " + context, description, start, end, address));
+                    }
+                    yield Optional.empty();
+                }
 
-				LocalTime t1, t2;
-				String name, starts, ends;
-				if(line.contains(context))
-				{
-					name = get("(Bierstadt|Rheinstr\\.|Dürerplatz|Erbenheim)\\s([\\wÖÄÜöäü]*-?[\\wÖÄÜöäü]*|[\\wÖÄÜöäü]*\\s\\d?)", line, 2);
-					t1 = catalogue.get(context).get(weekday).handover();
-					t2 = catalogue.get(context).get(weekday).closes();
-				}
-				else
-				{
-					if(weekday.equals(APO.Weekday.SUNDAY) && appointments.size()>1)
-					{
-						name = get("([\\wÖÄÜöäü]*-?[\\wÖÄÜöäü]*|[\\wÖÄÜöäü]*\\s\\d?)", line, 1);
-						t1 = LocalTime.of(16, 0);
-						t2 = LocalTime.of(20, 0);
-					}
-					else
-					{
-						name = get("([\\wÖÄÜöäü]*-?[\\wÖÄÜöäü]*|[\\wÖÄÜöäü]*\\s\\d?)", line, 1);
-						t1 = catalogue.get(context).get(weekday).opens();
-						t2 = catalogue.get(context).get(weekday).handover();
-					}
-				}
-				starts = getDate.apply(date.concat(String.valueOf(t1)));
-				ends = getDate.apply(date.concat(String.valueOf(t2)));
-				appointments.add(new APO.Appointment(name, "Arbeiten ".concat(context), starts, ends, dictionary.get(context).adressOf));
-			}
+                default -> {
+                    if (!token.matches(DATE_REGEX) && !token.matches(DURATION_REGEX) && !token.matches(WEEKDAY_REGEX))
+                    {
+                        String employee = token;
+                        String start = getFormattedDateTime.apply(date.concat(String.valueOf(catalogue.get(context)
+                                .get(weekday).closes())));
+                        String end = getFormattedDateTime.apply(date.concat(String.valueOf(catalogue.get(context)
+                                .get(weekday).closes().plusHours(4))));
+                        String description = flushTokenizer(tokenizer);
+                        yield Optional.of(new Appointment(employee, "Arbeiten " + context, description, start, end, address));
+                    }
+                    yield Optional.empty();
+                }
+            };
+            if(appointment.isPresent()) return appointment;
+        }
+        return Optional.empty();
+    }
 
-		}
-		return appointments;
-	}
-	private static String getDate(String raw) throws Exception{
-		Matcher dateM = Pattern.compile("(\\d\\d\\.\\d\\d\\.)").matcher(raw);
-		if(dateM.find())
-		{
-			return dateM.group().concat("2022");
-		}
-		else
-		{
-			throw new Exception("NO DATE PROVIDED");
-		}
-	}
-	private static String get(String regex, String str, int group){
-		var m = Pattern.compile(regex).matcher(str);
-		return m.find()? m.group(group):"";
-	}
+    private static String flushTokenizer(StringTokenizer st) {
+        StringBuilder res = new StringBuilder();
+        while (st.hasMoreTokens()) {
+            res.append(" ").append(st.nextToken());
+        }
+        return res.toString();
+    }
 
 }

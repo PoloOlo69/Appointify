@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.util.function.BiConsumer;
 
 public class Extractor {
-	public static final BiConsumer<String, String> extract = Extractor::accept;
-
-	private static void accept(String src, String dst){
+	public static void extract(String src, String dst){
 
 		//Create a PdfDocument instance
 		PdfDocument doc = new PdfDocument();

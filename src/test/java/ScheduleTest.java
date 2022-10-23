@@ -18,38 +18,38 @@ class ScheduleTest {
 
     @Test
     void schedule() throws Exception {
-        test1909();
+        // test1909();
     }
 
-    @Test
-    void test1909() throws Exception {
-        String s_String = Files.readString(Path.of("C:\\dev\\out\\arbeitsplan_2.txt")); // TODO
-
-        final String WEEKDAY_R = "\\s(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag)\\s";
-        final String CONTAINER_R = "(?<=\\bContainer\\b )(.*?)(?=\\bContainer\\b |\\z|\\d\\d:\\d\\d \\d\\d:\\d\\d |\\d\\d\\.\\d\\d\\.)";
-
-        var res = Arrays.stream(s_String.split(WEEKDAY_R)).toList();
-        var sub = Schedule.schedule(APO.Weekday.MONDAY, res.get(1)).toArray();
-        var ref = List.of(
-                new APO.Appointment("Mareike", "Arbeiten Rheinstr.", at(9, 19, 7, 0),
-                        at(9, 19, 12, 55), APO.Location.RHEINSTRASSE.adressOf),
-                new APO.Appointment("Eugen", "Arbeiten Rheinstr.", at(9, 19, 12, 55),
-                        at(9, 19, 19, 0), APO.Location.RHEINSTRASSE.adressOf),
-                new APO.Appointment("Hafida", "Arbeiten Dürerplatz", at(9, 19, 8, 15),
-                        at(9, 19, 12, 55), APO.Location.DÜRERPLATZ.adressOf),
-                new APO.Appointment("Ruth", "Arbeiten Dürerplatz", at(9, 19, 12, 55),
-                        at(9, 19, 18, 0), APO.Location.DÜRERPLATZ.adressOf),
-                new APO.Appointment("Francisco", "Arbeiten Bierstadt", at(9, 19, 7, 0),
-                        at(9, 19, 12, 55), APO.Location.BIERSTADT.adressOf),
-                new APO.Appointment("Paul", "Arbeiten Bierstadt", at(9, 19, 12, 55),
-                        at(9, 19, 18, 0), APO.Location.BIERSTADT.adressOf),
-                new APO.Appointment("Jamila", "Arbeiten Erbenheim", at(9, 19, 7, 0),
-                        at(9, 19, 13, 25), APO.Location.ERBENHEIM.adressOf),
-                new APO.Appointment("Vanja", "Arbeiten Erbenheim", at(9, 19, 13, 25),
-                        at(9, 19, 18, 0), APO.Location.ERBENHEIM.adressOf)
-        ).toArray();
-        assertArrayEquals(ref, sub, "Monday 19.09. wrong");
-    }
+   // @Test
+//    void test1909() throws Exception {
+//        String s_String = Files.readString(Path.of("C:\\dev\\out\\arbeitsplan_2.txt")); // TODO
+//
+//        final String WEEKDAY_R = "\\s(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag)\\s";
+//        final String CONTAINER_R = "(?<=\\bContainer\\b )(.*?)(?=\\bContainer\\b |\\z|\\d\\d:\\d\\d \\d\\d:\\d\\d |\\d\\d\\.\\d\\d\\.)";
+//
+//        var res = Arrays.stream(s_String.split(WEEKDAY_R)).toList();
+//        var sub = Schedule.scheduleByDay(APO.Weekday.MONDAY, res.get(1)).toArray();
+//        var ref = List.of(
+//                new APO.Appointment("Mareike", "Arbeiten Rheinstr.", at(9, 19, 7, 0),
+//                        at(9, 19, 12, 55), APO.Location.RHEINSTRASSE.adressOf),
+//                new APO.Appointment("Eugen", "Arbeiten Rheinstr.", at(9, 19, 12, 55),
+//                        at(9, 19, 19, 0), APO.Location.RHEINSTRASSE.adressOf),
+//                new APO.Appointment("Hafida", "Arbeiten Dürerplatz", at(9, 19, 8, 15),
+//                        at(9, 19, 12, 55), APO.Location.DÜRERPLATZ.adressOf),
+//                new APO.Appointment("Ruth", "Arbeiten Dürerplatz", at(9, 19, 12, 55),
+//                        at(9, 19, 18, 0), APO.Location.DÜRERPLATZ.adressOf),
+//                new APO.Appointment("Francisco", "Arbeiten Bierstadt", at(9, 19, 7, 0),
+//                        at(9, 19, 12, 55), APO.Location.BIERSTADT.adressOf),
+//                new APO.Appointment("Paul", "Arbeiten Bierstadt", at(9, 19, 12, 55),
+//                        at(9, 19, 18, 0), APO.Location.BIERSTADT.adressOf),
+//                new APO.Appointment("Jamila", "Arbeiten Erbenheim", at(9, 19, 7, 0),
+//                        at(9, 19, 13, 25), APO.Location.ERBENHEIM.adressOf),
+//                new APO.Appointment("Vanja", "Arbeiten Erbenheim", at(9, 19, 13, 25),
+//                        at(9, 19, 18, 0), APO.Location.ERBENHEIM.adressOf)
+//        ).toArray();
+//        assertArrayEquals(ref, sub, "Monday 19.09. wrong");
+//    }
 
     @Test
     void show() throws IOException {

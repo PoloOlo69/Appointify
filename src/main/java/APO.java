@@ -25,28 +25,28 @@ public interface APO {
         }
     }
 
-
     record BusinessHour(LocalTime opens, LocalTime closes, LocalTime handover) {}
-    record Appointment(String who, String title, String starts, String ends, String address) {
+
+    DateTimeFormatter DTFR = DateTimeFormatter.ofPattern("uuuuMMdd'T'HHmmss'Z'");
+    Function<String, String> getFormattedDateTime = s -> LocalDateTime.parse(s, DateTimeFormatter.ofPattern("dd.MM.yyyyHH:mm")).minusHours(2).format(DTFR);
+    Supplier<String> STAMP = () -> LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Z")).format(DTFR);
+    record Appointment(String who, String title, String description, String starts, String ends, String address) {
         String toICS() {
             return ("BEGIN:VEVENT\r\n" +
                     "DTSTAMP:%s\r\n" +
-                    "SUMMARY:%s\r\n" +
                     "UID:%s\r\n" +
+                    "SUMMARY:%s\r\n" +
                     "DTSTART:%s\r\n" +
                     "DTEND:%s\r\n" +
+                    "DESCRIPTION:%s\r\n" +
                     "LOCATION:%s\r\n" +
                     "END:VEVENT\r\n")
-                    .formatted(STAMP.get(), title, who + "_" + UUID.randomUUID(), starts, ends, address);
+                    .formatted(STAMP.get(), who + "_" + UUID.randomUUID(), title, starts, ends, description, address);
         }
+
     }
 
-
-    DateTimeFormatter DTFR = DateTimeFormatter.ofPattern("uuuuMMdd'T'HHmmss'Z'");
-    Supplier<String> STAMP = () -> LocalDateTime.ofInstant(Instant.now(), ZoneId.of("Z")).format(DTFR);
-    Function<String, String> getDate = s -> LocalDateTime.parse(s, DateTimeFormatter.ofPattern("dd.MM.yyyyHH:mm")).minusHours(2).format(APO.DTFR);
     BiFunction<Integer, Integer, LocalTime> time = LocalTime::of;
-
 
     Map<Weekday, BusinessHour> bierstadt = Map.of
             (
